@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="report_list_ddt_order">
+            <t t-call="report.html_container">
+                <t t-call="report.external_layout">
+                    <div class="page">
+                        <h1>
+                            Bollette Emesse
+                        </h1>
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th><strong>Numero DDT</strong></th>
+                                    <th class="text-right"><strong>Data</strong></th>
+                                    <th class="text-right"><strong>Cliente</strong></th>
+                                    <th class="text-right"><strong>Commerciale / Giro</strong></th>
+                                    <th class="text-right"><strong>Totale</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="docs" t-as="o">
+                                    <t t-foreach="o.picking_ids" t-as="pid">
+                                        <tr t-if="pid.state != 'cancel' ">
+                                            <td><span t-field="pid.ddt_id.name"></span></td>
+                                            <td class="text-right">
+                                                <span t-field="pid.ddt_id.date" t-field-options='{"format": "d/M/y"}'/>
+                                            </td>
+                                            <td class="text-right"><span t-field="o.partner_id.name" /></td>
+                                            <td class="text-right"><span t-field="o.user_id.name" /></td>
+                                            <td class="text-right">
+                                                <span t-field="o.amount_total"
+                                                      t-field-options='{"widget": "monetary",
+                                                                        "display_currency": "o.currency_id"}'/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                            </tbody>
+                        </table>
+                        <hr />
+                        <h3 class="text-right">
+                            Totale Documenti:
+                            <t t-esc="'€ {0:.2f}'.format(sum(o.amount_total for o in docs)).replace('.',',')"/>
+                        </h3>
+                    </div>
+                </t>
+            </t>
+        </template>
+
+        <report
+            string="Lista DDT"
+            id="action_ktec_report_list_ddt"
+            model="sale.order"
+            report_type="qweb-pdf"
+            name="sed-reports.report_list_ddt_order"
+            file="ktec_sedc.report_list_ddt"/>
+
+    </data>
+</openerp>
