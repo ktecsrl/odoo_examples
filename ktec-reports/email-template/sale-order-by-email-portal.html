@@ -1,0 +1,56 @@
+<p>Gentile ${object.partner_id.name},</p>
+
+<p>Di seguito trovi i dati del tuo ${object.state in ('draft', 'sent') and 'Preventivo' or 'Ordine'} per ${object.company_id.name}.</p>
+
+<b>Dettagli Ordine:</b><br>
+Numero ${object.state in ('draft', 'sent') and 'Preventivo' or 'Ordine'}: <strong>${object.name}</strong><br>
+Totale ${object.state in ('draft', 'sent') and 'Preventivo' or 'Ordine'}: <strong>${object.amount_total} ${object.pricelist_id.currency_id.name}</strong><br>
+Data Ordine: ${object.date_order}<br>
+% if object.origin:
+&nbsp; Riferimento Ordine: ${object.origin}<br>
+% endif
+% if object.client_order_ref:
+Vostro Riferimento: ${object.client_order_ref}<br>
+% endif
+% if object.user_id:
+Commerciale di Riferimento: <a href="mailto:${object.user_id.email} subject=Ordine ${object.name}">${object.user_id.name }</a>
+ % endif
+<br>
+
+% set signup_url = object.get_signup_url()
+
+% if signup_url:
+<p>Puoi visualizzare e pagare gli ordini tramite il nostro portale clienti:</p>
+<a href="${signup_url}" style="display:block; width: 150px; height:20px; margin-left: 120px; color: #DDD; font-family: 'Lucida Grande', Helvetica, Arial, sans-serif; font-size: 13px; font-weight: bold; text-align: center; text-decoration: none !important; line-height: 1; padding: 5px 0px 0px 0px; background-color: #8E0000; border-radius: 5px 5px; background-repeat: repeat no-repeat;">Visualizza ${object.state in ('draft', 'sent') and 'Preventio' or 'Ordine'}</a>
+% endif
+
+% if object.paypal_url:
+<p>Oppure puoi pagare direttamente con PayPal:</p>
+<a href="${object.paypal_url}" style="margin-left: 120px;"> <img class="oe_edi_paypal_button" src="https://www.paypalobjects.com/it_IT/IT/i/btn/btn_paynowCC_LG.gif"> </a>
+% endif
+<p></p>
+Per ogni dubbio o chiarimento non esitate a contattarci.
+
+<p>Grazie per aver scelto ${object.company_id.name or 'noi'}</p>
+
+------<br>
+${object.company_id.name or 'noi'}<br>
+% if object.company_id.street:
+${object.company_id.street}<br>
+% endif
+%if object.company_id.street2:
+${object.company_id.street2}<br>
+% endif
+%if object.company_id.city or object.company_id.zip:
+${object.company_id.zip} ${object.company_id.city}<br>
+% endif
+%if object.company_id.country_id:
+${object.company_id.state_id and ('%s, ' % object.company_id.state_id.name) or ''} ${object.company_id.country_id.name or ''}<br>
+% endif
+
+% if object.company_id.phone:
+Tel: ${object.company_id.phone}<br>
+% endif
+%if object.company_id.website:
+Web: ${object.company_id.website}<br>
+% endif

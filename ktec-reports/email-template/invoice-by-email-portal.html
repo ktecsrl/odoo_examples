@@ -1,0 +1,60 @@
+<p>Gentile ${object.partner_id.name},</p>
+
+<p>In allagato trova la Fattura n.ro ${object.internal_number} per un importo di ${object.currency_id.name} ${object.amount_total} </p>
+
+<b>Dettagli Fattura:</b><br>
+Numero: <strong>${object.internal_number}</strong><br>
+Totale: <strong>${object.currency_id.name} ${object.amount_total}</strong><br>
+Data: ${object.date_invoice}<br>
+% if object.origin:
+Riferimento: ${object.origin}<br>
+% endif
+% if object.user_id:
+Riferimento Interno Assegnato: <a href="mailto:${object.user_id.email} subject=Fattura ${object.internal_number}">${object.user_id.name }</a>
+ % endif
+<br>
+
+% set signup_url = object.get_signup_url()
+
+% if signup_url:
+<p>Puoi visualizzare le fatture tramite il nostro portale clienti:</p>
+<a href="${signup_url}" style="display:block; width: 150px; height:20px; margin-left: 120px; color: #DDD;
+   font-family: 'Lucida Grande', Helvetica, Arial, sans-serif;
+   font-size: 13px; font-weight: bold; text-align: center; text-decoration: none !important;
+   line-height: 1; padding: 5px 0px 0px 0px; background-color: #8E0000;
+   border-radius: 5px 5px; background-repeat: repeat no-repeat;">
+    Fattura ${object.internal_number}</a>
+% endif
+
+% if object.paypal_url:
+<p>Oppure puoi pagare direttamente con PayPal:</p>
+<a href="${object.paypal_url}" style="margin-left: 120px;">
+    <img class="oe_edi_paypal_button" src="https://www.paypalobjects.com/it_IT/IT/i/btn/btn_paynowCC_LG.gif">
+</a>
+% endif
+<p></p>
+Per ogni dubbio o chiarimento non esitate a contattarci.
+
+<p>Grazie per aver scelto ${object.company_id.name or 'noi'}</p>
+
+------<br>
+${object.company_id.name or 'noi'}<br>
+% if object.company_id.street:
+${object.company_id.street}<br>
+% endif
+%if object.company_id.street2:
+${object.company_id.street2}<br>
+% endif
+%if object.company_id.city or object.company_id.zip:
+${object.company_id.zip} ${object.company_id.city}<br>
+% endif
+%if object.company_id.country_id:
+${object.company_id.state_id and ('%s, ' % object.company_id.state_id.name) or ''} ${object.company_id.country_id.name or ''}<br>
+% endif
+
+% if object.company_id.phone:
+Tel: ${object.company_id.phone}<br>
+% endif
+%if object.company_id.website:
+Web: ${object.company_id.website}<br>
+% endif

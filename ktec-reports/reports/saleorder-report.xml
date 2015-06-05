@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="sale.report_saleorder_document">
+            <t t-call="report.external_layout">
+                <div class="page">
+                    <div class="row">
+                        <div class="col-xs-6">
+
+                        </div>
+                        <div class="col-xs-6 text-right">
+                            <h1>
+                                <span t-if="o.state not in ['draft','sent']">Ordine</span>
+                                <span t-if="o.state in ['draft','sent']">Preventivo</span>
+                            </h1>
+                            <h1>
+                                <small>
+                                    <span t-if="o.state not in ['draft','sent']">Ordine</span>
+                                    <span t-if="o.state in ['draft','sent']">Preventivo</span>
+                                    #
+                                    <span t-field="o.name"/>
+                                </small>
+                            </h1>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4>Fatturare a</h4>
+                                </div>
+                                <div class="panel-body">
+                                    <div t-field="o.partner_invoice_id"
+                                         t-field-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;, &quot;fax&quot;], &quot;no_marker&quot;: true}"/>
+                                    <br/>
+                                    <t t-if="o.partner_id.vat">P.IVA: <span t-field="o.partner_id.vat"/></t>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 text-right">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4>Spedire a</h4>
+                                </div>
+                                <div class="panel-body">
+                                    <div t-field="o.partner_shipping_id"
+                                         t-field-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;, &quot;fax&quot;], &quot;no_marker&quot;: true}"/>
+                                    <br/><br/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4>Informazioni</h4>
+                                </div>
+                                <div class="panel-body">
+                                    <t t-if="o.date_order">
+                                        <b>
+                                            <span t-if="o.state not in ['draft','sent']">Date Ordine:</span>
+                                            <span t-if="o.state in ['draft','sent']">Data Preventivo:</span>
+                                        </b>
+                                        <span t-field="o.date_order" t-field-options='{"format": "d/M/y"}'/>
+                                    </t>
+                                    <span t-if="o.client_order_ref"><b>Riferimento Cliente: </b>
+                                        <span t-field="o.client_order_ref"/>
+                                    </span>
+                                    <span t-if="o.user_id.name">
+                                        <b>Persona da Contattare: </b><span t-field="o.user_id.name"/>
+                                    </span>
+                                    <span t-if="o.payment_term"><b>Condizioni Pagamento: </b>
+                                        <span t-field="o.payment_term"/>
+                                    </span>
+                                    <span t-if="o.validity_date">
+                                        <b>Scadenza: </b><span t-field="o.validity_date" t-field-options='{"format": "d/M/y"}'/>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- / end client details section -->
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <h4>Prodotto e Descrizione</h4>
+                                </th>
+                                <th class="text-right">
+                                    <h4>Quantità</h4>
+                                </th>
+                                <th class="text-right">
+                                    <h4>Prezzo</h4>
+                                </th>
+                                <th groups="sale.group_discount_per_so_line" class="text-right">
+                                    <h4>Sconto</h4>
+                                </th>
+                                <th class="text-right">
+                                    <h4>Imposte</h4>
+                                </th>
+                                <th class="text-right active">
+                                    <h4>Totale</h4>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="o.order_line" t-as="l">
+                                <td>
+                                    <span t-field="l.name"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-field="l.product_uom_qty"/>
+                                    <span groups="product.group_uom" t-field="l.product_uom"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-field="l.price_unit"
+                                          t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;o.pricelist_id.currency_id&quot;}"/>
+                                </td>
+                                <td class="text-right" groups="sale.group_discount_per_so_line"><span
+                                        t-field="l.discount"/>%
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="', '.join(map(lambda x: x.name, l.tax_id))"/>
+                                </td>
+                                <td class="text-right active">
+                                    <span t-field="l.price_subtotal"
+                                          t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;o.pricelist_id.currency_id&quot;}"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-xs-2 col-xs-offset-8 text-right">
+                            <p>
+                                <strong>
+                                    Imponibile:
+                                    <br/>
+                                    Imposte:
+                                    <br/>
+                                    <h3>Totale:</h3>
+                                    <br/>
+                                </strong>
+                            </p>
+                        </div>
+                        <div class="col-xs-2 text-right">
+                            <strong>
+                                <span t-field="o.amount_untaxed"
+                                      t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;o.pricelist_id.currency_id&quot;}"/>
+                                <br/>
+                                <span t-field="o.amount_tax"
+                                      t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;o.pricelist_id.currency_id&quot;}"/>
+                                <br/>
+                                <h3>
+                                    <span t-field="o.amount_total"
+                                          t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;o.pricelist_id.currency_id&quot;}"/>
+                                </h3>
+                                <br/>
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="span7">
+                                <div class="panel panel-info">
+                                    <div class="panel-heading">
+                                        <h4>Note</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div id="informations">
+                                            <p t-field="o.note"/>
+                                            <p t-if="o.payment_term.note">
+                                                <strong>Termini di Pagamento:</strong>
+                                                <span t-field="o.payment_term.note"/>
+                                            </p>
+                                        </div>
+                                        Grazie per averci Scelto
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</openerp>
