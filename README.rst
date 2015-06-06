@@ -9,7 +9,7 @@ Reports Customuziation - KTec Reports
     * Custom report for invoice
     * Custom report for sale order
 
-!!BE CAREFULL!! the chain of extension may bloc odoo on startup when reinitialize DB (-u all -d YOURDB) if u don't understandan 
+!!BE CAREFULL!! the chain of extension may bloc odoo on startup when reinitialize DB (-u all -d YOURDB) if u don't understand 
 this remove website-quote report from __openerp__.py  
 
 :Authors:
